@@ -4,13 +4,44 @@ import Topbar from "./components/layout/Topbar"
 import Dashboard from "./pages/Dashboard"
 import TrafficMap from "./components/map/TrafficMap"
 
+import { useEffect, useState } from "react"
+import { fetchPredictions } from "./api/predict"
+import SignalTable from "./components/table/SignalTable"
+
 function Signals() {
+  const [signals, setSignals] = useState([])
+
+  useEffect(() => {
+    fetchPredictions().then((probs) => {
+      const rows = probs
+        .map((p, idx) => ({
+          id: `I${idx}`,
+          prob: Number(p.toFixed(3)),
+        }))
+        .sort((a, b) => b.prob - a.prob)
+        .slice(0, 10)
+        .map((row, i) => {
+          let risk = "LOW"
+          let action = "NO_ACTION"
+
+          if (i < 2) {
+            risk = "HIGH"
+            action = "EXTEND_GREEN"
+          } else if (i < 6) {
+            risk = "MEDIUM"
+            action = "REDUCE_INFLOW"
+          }
+
+          return { ...row, risk, action }
+        })
+
+      setSignals(rows)
+    })
+  }, [])
+
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold">Signal Status</h2>
-      <p className="text-gray-600 mt-2">
-        Signal control actions from ATCA will appear here.
-      </p>
+      <SignalTable data={signals} />
     </div>
   )
 }
