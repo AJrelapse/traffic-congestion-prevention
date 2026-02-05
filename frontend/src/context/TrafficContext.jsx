@@ -1,41 +1,43 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import { fetchPredictions } from "../api/predict"
+import { createContext, useContext, useState } from "react"
+import { uploadCsvAndPredict } from "../api/predict"
 
 const TrafficContext = createContext()
+
+function riskFromProb(p) {
+  if (p >= 0.7) return "HIGH"
+  if (p >= 0.4) return "MEDIUM"
+  return "LOW"
+}
+
+function actionFromRisk(risk) {
+  if (risk === "HIGH") return "EXTEND_GREEN"
+  if (risk === "MEDIUM") return "REDUCE_INFLOW"
+  return "NO_ACTION"
+}
 
 export function TrafficProvider({ children }) {
   const [nodes, setNodes] = useState([])
 
-  useEffect(() => {
-    fetchPredictions().then((probs) => {
-      const ranked = probs
-        .map((p, idx) => ({
-          id: `I${idx}`,
-          prob: Number(p.toFixed(3))
-        }))
-        .sort((a, b) => b.prob - a.prob)
+  async function loadFromCsv(file) {
+    const data = await uploadCsvAndPredict(file)
 
-      const withActions = ranked.map((node, i) => {
-        let risk = "LOW"
-        let action = "NO_ACTION"
-
-        if (i < 2) {
-          risk = "HIGH"
-          action = "EXTEND_GREEN"
-        } else if (i < 6) {
-          risk = "MEDIUM"
-          action = "REDUCE_INFLOW"
+    const enriched = data
+      .map((n) => {
+        const risk = riskFromProb(n.prob)
+        return {
+          id: n.id,
+          prob: Number(n.prob.toFixed(3)),
+          risk,
+          action: actionFromRisk(risk)
         }
-
-        return { ...node, risk, action }
       })
+      .sort((a, b) => b.prob - a.prob)
 
-      setNodes(withActions)
-    })
-  }, [])
+    setNodes(enriched)
+  }
 
   return (
-    <TrafficContext.Provider value={{ nodes }}>
+    <TrafficContext.Provider value={{ nodes, loadFromCsv }}>
       {children}
     </TrafficContext.Provider>
   )

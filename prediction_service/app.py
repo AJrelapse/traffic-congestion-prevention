@@ -2,7 +2,6 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import torch
 import pandas as pd
-import numpy as np
 
 from model import TrafficGRU
 
@@ -16,20 +15,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 model = TrafficGRU()
 model.load_state_dict(
     torch.load("traffic_gru_final.pt", map_location="cpu")
 )
 model.eval()
 
-
-
 @app.post("/predict")
 def predict(payload: dict):
     """
     Expects:
-    payload["input"] shape = (B, T, N, F)
+    payload["input"] shape = (B, T, N, F=2)
     """
     x = torch.tensor(payload["input"], dtype=torch.float32)
 
@@ -37,8 +33,6 @@ def predict(payload: dict):
         probs = model(x)
 
     return {"probabilities": probs.tolist()[0]}
-
-
 
 @app.post("/predict-csv")
 async def predict_from_csv(file: UploadFile = File(...)):
@@ -58,11 +52,15 @@ async def predict_from_csv(file: UploadFile = File(...)):
         return {"error": "CSV must contain exactly 12 time steps"}
 
 
-    speeds = torch.tensor(speed_values, dtype=torch.float32)
-    speeds = speeds.T.unsqueeze(0).unsqueeze(-1)
+    speed_tensor = torch.tensor(speed_values, dtype=torch.float32) 
+    dummy_feature = torch.zeros_like(speed_tensor)           
+
+    features = torch.stack([speed_tensor, dummy_feature], dim=-1)
+
+    x = features.permute(1, 0, 2).unsqueeze(0)
 
     with torch.no_grad():
-        probs = model(speeds)[0].tolist()
+        probs = model(x)[0].tolist()
 
     response = [
         {
