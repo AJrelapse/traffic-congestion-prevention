@@ -5,13 +5,18 @@ class TrafficGRU(nn.Module):
     def __init__(self, hidden_size=64):
         super().__init__()
         self.gru = nn.GRU(
-            input_size=2,
+            input_size=1, 
             hidden_size=hidden_size,
             batch_first=True
         )
         self.fc = nn.Linear(hidden_size, 1)
 
     def forward(self, x):
+        """
+        x shape:
+        - CSV mode: (B, T, N, 1)
+        """
+
         B, T, N, F = x.shape
 
         x = x.permute(0, 2, 1, 3)
