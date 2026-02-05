@@ -1,69 +1,36 @@
-import { useEffect, useState } from "react"
-import Header from "./components/Header"
-import RiskCard from "./components/RiskCard"
-import ActionTable from "./components/ActionTable"
-import { fetchPredictions } from "./api/predict"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Sidebar from "./components/layout/Sidebar"
+import Topbar from "./components/layout/Topbar"
+import Dashboard from "./pages/Dashboard"
+import TrafficMap from "./components/map/TrafficMap"
 
-function riskLevel(p) {
-  if (p >= 0.8) return "HIGH"
-  if (p >= 0.5) return "MEDIUM"
-  return "LOW"
-}
-
-function actionForRisk(risk) {
-  if (risk === "HIGH") return "EXTEND_GREEN"
-  if (risk === "MEDIUM") return "REDUCE_INFLOW"
-  return "NO_ACTION"
+function Signals() {
+  return (
+    <div className="p-6">
+      <h2 className="text-xl font-semibold">Signal Status</h2>
+      <p className="text-gray-600 mt-2">
+        Signal control actions from ATCA will appear here.
+      </p>
+    </div>
+  )
 }
 
 export default function App() {
-  const [data, setData] = useState([])
-
-  useEffect(() => {
-    fetchPredictions()
-      .then((probs) => {
-        console.log("Raw probabilities from model:", probs)
-        const formatted = probs
-          .map((p, idx) => ({
-            id: `I${idx}`,
-            prob: Number(p.toFixed(3)),
-            risk: riskLevel(p),
-            action: actionForRisk(riskLevel(p))
-          }))
-          .sort((a, b) => b.prob - a.prob)
-          .slice(0, 8)
-          .map((row, i) => {
-            let risk = "LOW"
-            let action = "NO_ACTION"
-
-            if (i < 2) {
-              risk = "HIGH"
-              action = "EXTEND_GREEN"
-            } else if (i < 5) {
-              risk = "MEDIUM"
-              action = "REDUCE_INFLOW"
-            }
-
-            return { ...row, risk, action }
-          })          
-        setData(formatted)
-      })
-      .catch(console.error)
-  }, [])
-
   return (
-    <div>
-      <Header />
+    <BrowserRouter>
+      <div className="flex">
+        <Sidebar />
 
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {data.map((node) => (
-          <RiskCard key={node.id} node={node} />
-        ))}
-      </div>
+        <div className="flex-1">
+          <Topbar />
 
-      <div className="p-6">
-        <ActionTable data={data} />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/map" element={<TrafficMap />} />
+            <Route path="/signals" element={<Signals />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }
