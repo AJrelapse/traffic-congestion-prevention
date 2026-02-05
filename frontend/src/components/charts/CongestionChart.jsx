@@ -1,21 +1,25 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts"
 
-const data = [
-  { zone: "I12", risk: 0.42 },
-  { zone: "I30", risk: 0.38 },
-  { zone: "I45", risk: 0.33 },
-]
-
-export default function CongestionChart() {
+export default function CongestionChart({ data }) {
   return (
     <div className="bg-white p-4 rounded shadow">
-      <h3 className="mb-2 font-semibold">Congestion Risk</h3>
-      <ResponsiveContainer width="100%" height={250}>
+      <h3 className="mb-2 font-semibold">
+        Highest Congestion Risk Intersections
+      </h3>
+
+      <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data}>
-          <XAxis dataKey="zone" />
-          <YAxis />
+          <XAxis dataKey="id" />
+          <YAxis domain={[0, 1]} />
           <Tooltip />
-          <Bar dataKey="risk" fill="#dc2626" />
+          <Bar dataKey="prob" fill="#dc2626" />
         </BarChart>
       </ResponsiveContainer>
     </div>

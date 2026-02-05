@@ -15,7 +15,6 @@ export function TrafficProvider({ children }) {
         }))
         .sort((a, b) => b.prob - a.prob)
 
-      // 🔥 ATCA LOGIC — SINGLE PLACE
       const withActions = ranked.map((node, i) => {
         let risk = "LOW"
         let action = "NO_ACTION"

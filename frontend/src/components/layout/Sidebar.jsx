@@ -9,7 +9,7 @@ const activeClass =
 export default function Sidebar() {
   return (
     <div className="w-64 bg-gray-900 text-white h-screen p-5">
-      <h1 className="text-xl font-bold mb-6">🚦 Traffic AI</h1>
+      <h1 className="text-xl font-bold mb-6">Traffic AI</h1>
 
       <nav className="space-y-2">
         <NavLink
