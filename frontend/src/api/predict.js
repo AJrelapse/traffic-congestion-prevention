@@ -2,7 +2,7 @@ export async function uploadCsvAndPredict(file) {
   const formData = new FormData()
   formData.append("file", file)
 
-  const res = await fetch("http://127.0.0.1:8000/predict-csv", {
+  const res = await fetch("https://traffic-congestion-prevention.onrender.com/predict-csv", {
     method: "POST",
     body: formData
   })
