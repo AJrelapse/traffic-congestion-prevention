@@ -23,7 +23,7 @@ const Home = () => {
       </div>
 
       <div className="navbar">
-        <div className="nav-left">Traffic AI</div>
+        <div className="nav-left">TraffiSense</div>
 
         <div className="nav-right">
           <a href="/">Home</a>

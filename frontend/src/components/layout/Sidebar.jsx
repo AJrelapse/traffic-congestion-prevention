@@ -16,7 +16,7 @@ export default function Sidebar() {
           >
         <div className="sidebar-logo">
           <Activity size={20} />
-          Traffic AI
+          TraffiSense
         </div></NavLink>
 
         <div className="sidebar-nav">
@@ -52,10 +52,6 @@ export default function Sidebar() {
           </NavLink>
 
         </div>
-      </div>
-
-      <div className="sidebar-footer">
-        © Traffic AI System
       </div>
 
     </div>
