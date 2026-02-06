@@ -17,27 +17,45 @@ function actionFromRisk(risk) {
 
 export function TrafficProvider({ children }) {
   const [nodes, setNodes] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   async function loadFromCsv(file) {
-    const data = await uploadCsvAndPredict(file)
+    setLoading(true)
+    setError(null)
 
-    const enriched = data
-      .map((n) => {
-        const risk = riskFromProb(n.prob)
-        return {
-          id: n.id,
-          prob: Number(n.prob.toFixed(3)),
-          risk,
-          action: actionFromRisk(risk)
-        }
-      })
-      .sort((a, b) => b.prob - a.prob)
+    try {
+      const data = await uploadCsvAndPredict(file)
 
-    setNodes(enriched)
+      const enriched = data
+        .map((n) => {
+          const risk = riskFromProb(n.prob)
+          return {
+            id: n.id,
+            prob: Number(n.prob.toFixed(3)),
+            risk,
+            action: actionFromRisk(risk)
+          }
+        })
+        .sort((a, b) => b.prob - a.prob)
+
+      setNodes(enriched)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <TrafficContext.Provider value={{ nodes, loadFromCsv }}>
+    <TrafficContext.Provider
+      value={{
+        nodes,
+        loadFromCsv,
+        loading,
+        error
+      }}
+    >
       {children}
     </TrafficContext.Provider>
   )
