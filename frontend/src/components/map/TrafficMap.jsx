@@ -20,8 +20,8 @@ export default function TrafficMap() {
   return (
     <div style={{ height: "100vh", width: "100%" }}>
       <MapContainer
-        center={[34.05, -118.25]}
-        zoom={11}
+        center={[12.9716, 77.5946]}
+        zoom={12}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
