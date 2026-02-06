@@ -1,45 +1,63 @@
 import { NavLink } from "react-router-dom"
-
-const linkClass =
-  "block px-3 py-2 rounded hover:bg-gray-800 transition"
-
-const activeClass =
-  "bg-gray-800 text-blue-400"
+import {
+  LayoutDashboard,
+  Map,
+  TrafficCone,
+  Activity
+} from "lucide-react"
 
 export default function Sidebar() {
   return (
-    <div className="w-64 bg-gray-900 text-white h-screen p-5">
-      <h1 className="text-xl font-bold mb-6">Traffic AI</h1>
+    <div className="glass-sidebar">
+      <div>
 
-      <nav className="space-y-2">
-        <NavLink
-          to="/"
-          end
-          className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
-          }
-        >
-          Dashboard
-        </NavLink>
+          <NavLink
+            to="/"
+          >
+        <div className="sidebar-logo">
+          <Activity size={20} />
+          Traffic AI
+        </div></NavLink>
 
-        <NavLink
-          to="/map"
-          className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
-          }
-        >
-          Live Map
-        </NavLink>
+        <div className="sidebar-nav">
 
-        <NavLink
-          to="/signals"
-          className={({ isActive }) =>
-            `${linkClass} ${isActive ? activeClass : ""}`
-          }
-        >
-          Signals
-        </NavLink>
-      </nav>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? "sidebar-active" : ""}`
+            }
+          >
+            <LayoutDashboard size={18} />
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/map"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? "sidebar-active" : ""}`
+            }
+          >
+            <Map size={18} />
+            Live Map
+          </NavLink>
+
+          <NavLink
+            to="/signals"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? "sidebar-active" : ""}`
+            }
+          >
+            <TrafficCone size={18} />
+            Signals
+          </NavLink>
+
+        </div>
+      </div>
+
+      <div className="sidebar-footer">
+        © Traffic AI System
+      </div>
+
     </div>
   )
 }

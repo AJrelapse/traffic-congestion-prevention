@@ -1,9 +1,17 @@
+import { Bell, User } from "lucide-react"
+
 export default function Topbar() {
   return (
-    <div className="h-14 bg-white shadow flex items-center px-6">
-      <h2 className="font-semibold text-gray-700">
-        Proactive Traffic Congestion Prevention System
-      </h2>
+    <div className="glass-topbar">
+
+      <div className="topbar-title">
+        Traffic Congestion Prevention
+      </div>
+
+      <div className="topbar-actions">
+
+      </div>
+
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Circle } from "react-leaflet"
+import { MapContainer, TileLayer, Circle, Tooltip } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { useTraffic } from "../../context/TrafficContext"
 import sensorLocations from "../../data/sensor_locations.json"
@@ -47,7 +47,16 @@ export default function TrafficMap() {
               center={[loc.lat, loc.lng]}
               radius={300 + n.prob * 1000}
               pathOptions={{ color }}
-            />
+            >
+              <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+                <div className="text-sm">
+                  <div><strong>Sensor:</strong> {n.id}</div>
+                  <div><strong>Risk:</strong> {n.risk}</div>
+                  <div><strong>Probability:</strong> {(n.prob * 100).toFixed(1)}%</div>
+                  <div><strong>Action:</strong> {n.action}</div>
+                </div>
+              </Tooltip>
+            </Circle>
           )
         })}
       </MapContainer>

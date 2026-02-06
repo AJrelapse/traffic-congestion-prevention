@@ -1,41 +1,63 @@
+import { ArrowUpRight, AlertTriangle, ShieldCheck } from "lucide-react"
+
 export default function SignalTable({ data }) {
+
+  const getRiskClass = (risk) => {
+    if (risk === "HIGH") return "risk-high"
+    if (risk === "MEDIUM") return "risk-medium"
+    return "risk-low"
+  }
+
+  const getRiskIcon = (risk) => {
+    if (risk === "HIGH") return <AlertTriangle size={16} />
+    if (risk === "MEDIUM") return <ArrowUpRight size={16} />
+    return <ShieldCheck size={16} />
+  }
+
   return (
-    <div className="bg-white rounded shadow p-4">
-      <h3 className="text-lg font-semibold mb-4">Signal Control Actions</h3>
+    <div className="signal-glass">
 
-      <table className="w-full text-left border">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-2 border">Intersection</th>
-            <th className="p-2 border">Probability</th>
-            <th className="p-2 border">Risk</th>
-            <th className="p-2 border">Action</th>
-          </tr>
-        </thead>
+      <div className="signal-title">
+        Signal Control Actions
+      </div>
 
-        <tbody>
-          {data.map((row) => (
-            <tr key={row.id}>
-              <td className="p-2 border">{row.id}</td>
-              <td className="p-2 border">{row.prob}</td>
-              <td className="p-2 border">
-                <span
-                  className={
-                    row.risk === "HIGH"
-                      ? "text-red-600 font-semibold"
-                      : row.risk === "MEDIUM"
-                      ? "text-yellow-600 font-semibold"
-                      : "text-green-600"
-                  }
-                >
-                  {row.risk}
-                </span>
-              </td>
-              <td className="p-2 border font-medium">{row.action}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="signal-table">
+
+        <div className="signal-row signal-head">
+
+          <div>Intersection</div>
+          <div>Probability</div>
+          <div>Risk Level</div>
+          <div>Recommended Action</div>
+
+        </div>
+
+        {data.map((row) => (
+
+          <div key={row.id} className="signal-row">
+
+            <div className="signal-id">
+              {row.id}
+            </div>
+
+            <div className="signal-prob">
+              {(row.prob * 100).toFixed(1)}%
+            </div>
+
+            <div className={`signal-risk ${getRiskClass(row.risk)}`}>
+              {getRiskIcon(row.risk)}
+              {row.risk}
+            </div>
+
+            <div className="signal-action">
+              {row.action}
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
     </div>
   )
 }
