@@ -30,7 +30,7 @@ traffic_logs.csv
 
 *.h5
 *.npy
-*.csv
+
 
 
 .env

@@ -34,6 +34,14 @@ export default function CsvUpload() {
           CSV file containing intersection traffic data
         </div>
 
+        <a
+          href="/traffic_input.csv"
+          download
+          className="upload-download"
+        >
+          Download sample data to upload
+        </a>
+
       </div>
 
       <label className="upload-btn">
